@@ -20,6 +20,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { MainComponent } from './main/main.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { AvatarComponent } from './avatar/avatar.component';
+import { DayViewComponent } from './day-view/day-view.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,6 +28,7 @@ import { AvatarComponent } from './avatar/avatar.component';
     MainComponent,
     ToolbarComponent,
     AvatarComponent,
+    DayViewComponent,
   ],
   imports: [
     BrowserModule,
