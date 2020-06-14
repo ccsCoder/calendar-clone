@@ -10,6 +10,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatGridListModule } from '@angular/material/grid-list';
+
 
 
 
@@ -21,6 +23,7 @@ import { MainComponent } from './main/main.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 import { AvatarComponent } from './avatar/avatar.component';
 import { DayViewComponent } from './day-view/day-view.component';
+import { DayTimeSlotComponent } from './day-time-slot/day-time-slot.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,6 +32,7 @@ import { DayViewComponent } from './day-view/day-view.component';
     ToolbarComponent,
     AvatarComponent,
     DayViewComponent,
+    DayTimeSlotComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,6 +46,7 @@ import { DayViewComponent } from './day-view/day-view.component';
     MatInputModule,
     MatMomentDateModule,
     MatSelectModule,
+    MatGridListModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

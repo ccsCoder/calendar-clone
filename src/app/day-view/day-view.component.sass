@@ -3,11 +3,13 @@ $accent-color: #e91e63
 .day-view
   height: 100%
   width: 100%
+  overflow: hidden
 
   & > header.day-header
     height: 10%
     width: 100%
     padding: 10px
+    border-bottom: .5px solid #C8C4C3
 
     & > .current-day
       position: relative
@@ -24,3 +26,14 @@ $accent-color: #e91e63
       & > .date
         margin-top: 10px
         font-size: 2rem
+
+// day-view
+main.day-calendar
+  width: 100%
+  height: 100%
+  overflow-x: hidden
+  overflow-y: auto
+
+  & .time-slot-row
+    width: 100%
+
