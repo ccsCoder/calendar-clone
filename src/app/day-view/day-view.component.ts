@@ -7,8 +7,10 @@ import * as moment from 'moment';
 })
 export class DayViewComponent implements OnInit {
 
-  currentDay: string = moment().format('dddd').toUpperCase().substr(0, 3);
-  currentDate: string = moment().format('DD');
+  currentDay: string = moment().format('dddd');
+  currentDate: string = moment().format('Do');
+  currentMonth: string = moment().format('MMMM');
+
   slots = [
     '00:00', '01:00', '02:00', '03:00', '04:00',
     '05:00', '06:00', '07:00', '08:00', '09:00',
