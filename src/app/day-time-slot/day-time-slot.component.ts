@@ -8,15 +8,11 @@ import { Component, OnInit, Input } from '@angular/core';
 export class DayTimeSlotComponent implements OnInit {
 
   @Input() start: string = null;
-  end: string;
 
   constructor() {
   }
 
   ngOnInit(): void {
-    if (this.start !== null) {
-      this.end = `${(parseInt(this.start, 0)) + 1}:00`;
-    }
   }
 
 }

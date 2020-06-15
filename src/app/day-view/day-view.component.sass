@@ -1,12 +1,11 @@
 $accent-color: #e91e63
 
 .day-view
-  height: 100%
+  height: 90%
   width: 100%
-  overflow: hidden
 
   & > header.day-header
-    height: 10%
+    height: 100px
     width: 100%
     display: flex
 
@@ -32,7 +31,8 @@ $accent-color: #e91e63
 // day-view
 main.day-calendar
   width: 100%
-  height: 100%
+  height: calc(100% - 100px)
+  padding-bottom: 20px
   overflow-x: hidden
   overflow-y: auto
 
