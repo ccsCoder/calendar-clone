@@ -1,0 +1,19 @@
+<section class="day-view">
+  <header class="day-header">
+    <div class="fab-action"></div>
+    <div class="current-day">
+      <h1>{{currentDate}} {{currentMonth}}, {{currentDay}}</h1>
+    </div>
+  </header>
+  <main class="day-calendar">
+    <mat-grid-list cols="1" rowHeight="50">
+      <mat-grid-tile *ngFor="let slot of slots">
+        <app-day-time-slot
+          class="time-slot-row"
+          [start]="slot"
+        >
+        </app-day-time-slot>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </main>
+</section>
