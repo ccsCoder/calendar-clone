@@ -1,15 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
+import { EventProviderService } from '../event-provider.service';
 @Component({
   selector: 'app-day-view',
   templateUrl: './day-view.component.html',
   styleUrls: ['./day-view.component.sass']
 })
 export class DayViewComponent implements OnInit {
+  constructor(private eventService: EventProviderService) { }
 
   currentDay: string = moment().format('dddd');
   currentDate: string = moment().format('Do');
   currentMonth: string = moment().format('MMMM');
+
+  events = null;
 
   slots: string[] = [
     '00:00', '01:00', '02:00', '03:00', '04:00',
@@ -18,9 +22,9 @@ export class DayViewComponent implements OnInit {
     '15:00', '16:00', '17:00', '18:00', '19:00',
     '20:00', '21:00', '22:00', '23:00',
   ];
-  constructor() { }
 
   ngOnInit(): void {
+    this.events = this.eventService.fetchEvents();
   }
 
 }
