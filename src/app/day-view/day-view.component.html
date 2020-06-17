@@ -6,6 +6,7 @@
     </div>
   </header>
   <main class="day-calendar">
+    <!-- Render the Events -->
     <app-day-view-event
       *ngFor="let event of events"
       [startTime]="event.startTime"
@@ -13,15 +14,10 @@
       [eventName]="event.name"
     >
     </app-day-view-event>
-    <mat-grid-list cols="1" rowHeight="50px">
-      <mat-grid-tile *ngFor="let slot of slots">
-        <app-day-time-slot
-          class="time-slot-row"
-          [start]="slot"
-        >
-        </app-day-time-slot>
-      </mat-grid-tile>
-    </mat-grid-list>
-
+    <app-day-time-slot *ngFor="let slot of slots"
+      class="time-slot-row"
+      [start]="slot"
+    >
+    </app-day-time-slot>
   </main>
 </section>

@@ -16,13 +16,13 @@ export class EventProviderService {
         startTime: '11:00',
         endTime: '12:15'
       },
-      // {
-      //   id: 2,
-      //   name: 'Buy the milk',
-      //   attendees: 'Gajodhar, Sangatha',
-      //   startTime: '01:00',
-      //   endTime: '02:00'
-      // }
+      {
+        id: 2,
+        name: 'Buy the milk',
+        attendees: 'Gajodhar, Sangatha',
+        startTime: '01:00',
+        endTime: '02:00'
+      }
     ];
   }
 }

@@ -1,7 +1,6 @@
 $accent-color: #e91e63
 
 .day-view
-  height: auto
   width: 100%
 
   & > header.day-header
@@ -28,16 +27,16 @@ $accent-color: #e91e63
         font-size: 2rem
         margin-bottom: 0
 
-main.day-calendar
-  width: 100%
-  padding-bottom: 20px
-  overflow-x: hidden
-  overflow-y: auto
-  position: relative
-
-  & .time-slot-row
+  & main.day-calendar
     width: 100%
-    height: 50px
-    padding: 0
-    margin: 0
+    height: calc(100% - 100px)
+    max-height: calc(100% - 100px)
+    overflow: auto
+    position: relative
+
+    & .time-slot-row
+      width: 100%
+      height: 50px
+      padding: 0
+      margin: 0
 
