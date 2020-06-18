@@ -24,6 +24,8 @@ import { ToolbarComponent } from './toolbar/toolbar.component';
 import { AvatarComponent } from './avatar/avatar.component';
 import { DayViewComponent } from './day-view/day-view.component';
 import { DayTimeSlotComponent } from './day-time-slot/day-time-slot.component';
+import { DayViewEventComponent } from './day-view-event/day-view-event.component';
+import { EventProviderService } from './event-provider.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,6 +35,7 @@ import { DayTimeSlotComponent } from './day-time-slot/day-time-slot.component';
     AvatarComponent,
     DayViewComponent,
     DayTimeSlotComponent,
+    DayViewEventComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,7 +51,7 @@ import { DayTimeSlotComponent } from './day-time-slot/day-time-slot.component';
     MatSelectModule,
     MatGridListModule,
   ],
-  providers: [],
+  providers: [EventProviderService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
