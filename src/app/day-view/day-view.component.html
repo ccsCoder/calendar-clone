@@ -7,17 +7,19 @@
   </header>
   <main class="day-calendar">
     <!-- Render the Events -->
-    <app-day-view-event
-      *ngFor="let event of events"
-      [startTime]="event.startTime"
-      [endTime]="event.endTime"
-      [eventName]="event.name"
-    >
-    </app-day-view-event>
-    <app-day-time-slot *ngFor="let slot of slots"
-      class="time-slot-row"
-      [start]="slot"
-    >
-    </app-day-time-slot>
+    <div class="events-container">
+      <app-day-view-event
+        *ngFor="let event of events"
+        [startTime]="event.startTime"
+        [endTime]="event.endTime"
+        [eventName]="event.name"
+      >
+      </app-day-view-event>
+      <app-day-time-slot *ngFor="let slot of slots"
+        class="time-slot-row"
+        [start]="slot"
+      >
+      </app-day-time-slot>
+    </div>
   </main>
 </section>
