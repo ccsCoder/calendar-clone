@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-avatar',
@@ -7,9 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AvatarComponent implements OnInit {
 
+  @Input() pictureUrl: string;
+  @Output() userLoggedOut = new EventEmitter();
+
   constructor() { }
 
   ngOnInit(): void {
   }
-
 }
