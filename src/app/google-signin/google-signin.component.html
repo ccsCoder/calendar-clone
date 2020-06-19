@@ -1,0 +1,12 @@
+<button mat-stroked-button
+  (click)="signInWithGoogle()"
+  *ngIf="!loggedIn"
+>
+  Sign In
+</button>
+<button *ngIf="loggedIn" mat-button (click)="logoutSelect.open()">
+  <img class="avatar" aria-role="menu" src="{{user.photoUrl}}">
+</button>
+<mat-select #logoutSelect class="logout-select">
+  <mat-option (click)="logout()" value="Log out">Log Out</mat-option>
+</mat-select>

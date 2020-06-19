@@ -11,7 +11,9 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatGridListModule } from '@angular/material/grid-list';
-
+import { SocialLoginModule, SocialAuthServiceConfig } from 'angularx-social-login';
+import { GoogleLoginProvider } from 'angularx-social-login';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 
@@ -26,6 +28,8 @@ import { DayViewComponent } from './day-view/day-view.component';
 import { DayTimeSlotComponent } from './day-time-slot/day-time-slot.component';
 import { DayViewEventComponent } from './day-view-event/day-view-event.component';
 import { EventProviderService } from './event-provider.service';
+import { GoogleSigninComponent } from './google-signin/google-signin.component';
+import { LoginPersistanceService } from './login-persistance.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,6 +40,7 @@ import { EventProviderService } from './event-provider.service';
     DayViewComponent,
     DayTimeSlotComponent,
     DayViewEventComponent,
+    GoogleSigninComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,8 +55,27 @@ import { EventProviderService } from './event-provider.service';
     MatMomentDateModule,
     MatSelectModule,
     MatGridListModule,
+    MatSnackBarModule,
+    SocialLoginModule,
   ],
-  providers: [EventProviderService],
+  providers: [
+    EventProviderService,
+    LoginPersistanceService,
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              '902255523439-90cbpoon64it2c0m7p7se34slhb7bnsp.apps.googleusercontent.com'
+            ),
+          },
+        ],
+      } as SocialAuthServiceConfig,
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

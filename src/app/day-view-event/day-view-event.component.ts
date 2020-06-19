@@ -18,7 +18,6 @@ export class DayViewEventComponent implements OnInit {
 
   constructor() {
     this.pixelsPerMin = 5.0 / parseFloat('6');
-    console.log(`Pixels per minute = ${this.pixelsPerMin}`);
   }
 
   ngOnInit(): void {
@@ -36,7 +35,6 @@ export class DayViewEventComponent implements OnInit {
       left: '100px',
       height: `${this.height}px`
     };
-    console.log(retVal);
     return retVal;
   }
 
