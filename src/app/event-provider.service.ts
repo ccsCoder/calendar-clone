@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { CalendarApiConfig } from 'src/apiConfig';
 import { from, of, Observable, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -32,12 +33,17 @@ export class EventProviderService {
     }
   }
 
+  logout = () => {
+    this.googleAuthInstance.signOut();
+  }
+
   fetchUpcomingEvents = () => {
     if (this.isAuthorized) {
       // Make API request
       const eventsPromise = (window as any).gapi.client.calendar.events.list({
         calendarId: 'primary',
         timeMin: (new Date()).toISOString(),
+        // timeMax: moment().add(1, 'days').toISOString(),
         showDeleted: false,
         singleEvents: true,
         maxResults: 10,

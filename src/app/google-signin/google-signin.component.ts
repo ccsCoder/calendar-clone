@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { LoginPersistanceService } from '../login-persistance.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventProviderService } from '../event-provider.service';
+
 
 @Component({
   selector: 'app-google-signin',
@@ -10,9 +11,12 @@ import { EventProviderService } from '../event-provider.service';
 })
 export class GoogleSigninComponent implements OnInit {
 
+  user = null;
   loggedIn: boolean;
   scopes: string[] = ['https://www.googleapis.com/auth/calendar.readonly',
   'https://www.googleapis.com/auth/calendar.events'];
+
+  @Output() eventDataRefreshed = new EventEmitter<any>();
 
 
   constructor(
@@ -23,11 +27,18 @@ export class GoogleSigninComponent implements OnInit {
   ) { }
 
   signInWithGoogle(): void {
-      // this.eventProviderService.getUpcomingEvents();
-      this.eventProviderService.fetchUpcomingEvents();
+      this.eventProviderService.fetchUpcomingEvents().subscribe(data => {
+        // emit this data for rendering events.
+        this.eventDataRefreshed.emit(data.events);
+        this.loggedIn = true;
+        this.user = data.userProfile;
+        this.loginPersistanceService.persistLogin(this.user);
+        this._snackBar.open(`Hi ${this.user.name} !`, null, { duration: 2000 });
+      });
   }
 
   logout() {
+    this.eventProviderService.logout();
     // Display the toast message
     this._snackBar.open('You have been logged out.', null, {
       duration: 2000,
@@ -39,20 +50,10 @@ export class GoogleSigninComponent implements OnInit {
 
   ngOnInit(): void {
     const loggedInUser = JSON.parse(this.loginPersistanceService.isUserLoggedIn());
-    // if (loggedInUser !== null) {
-    //   this.loggedIn = true;
-    //   return;
-    // }
-    // // in case the user is Not logged in.
-    // this.authService.authState.subscribe(user => {
-    //   this.user = user;
-    //   this.loginPersistanceService.persistLogin(user);
-    //   this.loggedIn = (user !== null);
-    //   setTimeout(() => {
-    //     this._snackBar.open(`Hi ${user.name} !`, null, { duration: 2000 });
-    //     // this.eventProviderService.getUpcomingEvents();
-    //   }, 500);
-    // });
+    if (loggedInUser !== null) {
+      this.loggedIn = true;
+      this.user = loggedInUser;
+      return;
+    }
   }
-
 }
