@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { SocialAuthService, GoogleLoginProvider, SocialUser } from 'angularx-social-login';
 import { LoginPersistanceService } from '../login-persistance.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { EventProviderService } from '../event-provider.service';
 
 @Component({
   selector: 'app-google-signin',
@@ -10,46 +10,49 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class GoogleSigninComponent implements OnInit {
 
-  user: SocialUser;
   loggedIn: boolean;
+  scopes: string[] = ['https://www.googleapis.com/auth/calendar.readonly',
+  'https://www.googleapis.com/auth/calendar.events'];
+
 
   constructor(
-    private authService: SocialAuthService,
     private loginPersistanceService: LoginPersistanceService,
+    private eventProviderService: EventProviderService,
     // tslint:disable-next-line: variable-name
     private _snackBar: MatSnackBar,
   ) { }
 
   signInWithGoogle(): void {
-      this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
+      // this.eventProviderService.getUpcomingEvents();
+      this.eventProviderService.fetchUpcomingEvents();
   }
 
   logout() {
+    // Display the toast message
     this._snackBar.open('You have been logged out.', null, {
       duration: 2000,
     });
     // remove the item from storage
     this.loginPersistanceService.removeLogin();
     this.loggedIn = false;
-    this.user = null;
   }
 
   ngOnInit(): void {
     const loggedInUser = JSON.parse(this.loginPersistanceService.isUserLoggedIn());
-    if (loggedInUser !== null) {
-      this.user = loggedInUser;
-      this.loggedIn = true;
-      return;
-    }
-    // in case the user is Not logged in.
-    this.authService.authState.subscribe(user => {
-      this.user = user;
-      this.loginPersistanceService.persistLogin(user);
-      this.loggedIn = (user !== null);
-      setTimeout(() => {
-        this._snackBar.open(`Hi ${user.name} !`, null, { duration: 2000 });
-      }, 500);
-    });
+    // if (loggedInUser !== null) {
+    //   this.loggedIn = true;
+    //   return;
+    // }
+    // // in case the user is Not logged in.
+    // this.authService.authState.subscribe(user => {
+    //   this.user = user;
+    //   this.loginPersistanceService.persistLogin(user);
+    //   this.loggedIn = (user !== null);
+    //   setTimeout(() => {
+    //     this._snackBar.open(`Hi ${user.name} !`, null, { duration: 2000 });
+    //     // this.eventProviderService.getUpcomingEvents();
+    //   }, 500);
+    // });
   }
 
 }

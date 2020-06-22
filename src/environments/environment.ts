@@ -6,10 +6,6 @@ export const environment = {
   production: false
 };
 
-export const GoogleApi = {
-  clientId: '902255523439-90cbpoon64it2c0m7p7se34slhb7bnsp.apps.googleusercontent.com',
-  clientSecret: 'FtPhqUnj2DN-z0kZtSNflQOE'
-};
 
 /*
  * For easier debugging in development mode, you can import the following file

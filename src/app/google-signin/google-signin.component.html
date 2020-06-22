@@ -4,9 +4,9 @@
 >
   Sign In
 </button>
-<button *ngIf="loggedIn" mat-button (click)="logoutSelect.open()">
+<!-- <button *ngIf="loggedIn" mat-button (click)="logoutSelect.open()">
   <img class="avatar" aria-role="menu" src="{{user.photoUrl}}">
-</button>
+</button> -->
 <mat-select #logoutSelect class="logout-select">
   <mat-option (click)="logout()" value="Log out">Log Out</mat-option>
 </mat-select>
