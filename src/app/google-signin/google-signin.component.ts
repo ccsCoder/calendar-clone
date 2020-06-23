@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { SocialAuthService, GoogleLoginProvider, SocialUser } from 'angularx-social-login';
+import { Component, OnInit, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { LoginPersistanceService } from '../login-persistance.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { EventProviderService } from '../event-provider.service';
+
 
 @Component({
   selector: 'app-google-signin',
@@ -10,46 +11,61 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class GoogleSigninComponent implements OnInit {
 
-  user: SocialUser;
+  user = null;
   loggedIn: boolean;
+  scopes: string[] = ['https://www.googleapis.com/auth/calendar.readonly',
+  'https://www.googleapis.com/auth/calendar.events'];
+
+  @Output() eventDataRefreshed = new EventEmitter<any>();
+
 
   constructor(
-    private authService: SocialAuthService,
     private loginPersistanceService: LoginPersistanceService,
+    private eventProviderService: EventProviderService,
     // tslint:disable-next-line: variable-name
     private _snackBar: MatSnackBar,
   ) { }
 
-  signInWithGoogle(): void {
-      this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
+  signIn = () => {
+    this.showSnackbar('Please authenticate in the Google Popup...');
+    this.eventProviderService.signIn(this.onEventsLoaded);
   }
 
-  logout() {
-    this._snackBar.open('You have been logged out.', null, {
-      duration: 2000,
-    });
+  logout = () => {
+    this.eventProviderService.signOut();
+    // Display the toast message
+    this.showSnackbar('You have been logged out.');
     // remove the item from storage
     this.loginPersistanceService.removeLogin();
     this.loggedIn = false;
-    this.user = null;
   }
 
-  ngOnInit(): void {
+  private onEventsLoaded = data => {
+    this.eventDataRefreshed.emit(data.events);
+    this.loggedIn = true;
+    this.user = data.userProfile;
+    setTimeout(() => {
+      this.showSnackbar(`Hi ${this.user.name} !`);
+    }, 1000);
+    this.loginPersistanceService.persistLogin(this.user);
+  }
+
+  private showSnackbar(message: string) {
+    this._snackBar.open(message, null, {
+      duration: 2000,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+      politeness: 'assertive',
+      panelClass: ['warning', 'mat-toolbar']
+    });
+  }
+
+  ngOnInit() {
     const loggedInUser = JSON.parse(this.loginPersistanceService.isUserLoggedIn());
     if (loggedInUser !== null) {
       this.user = loggedInUser;
       this.loggedIn = true;
-      return;
+    } else {
     }
-    // in case the user is Not logged in.
-    this.authService.authState.subscribe(user => {
-      this.user = user;
-      this.loginPersistanceService.persistLogin(user);
-      this.loggedIn = (user !== null);
-      setTimeout(() => {
-        this._snackBar.open(`Hi ${user.name} !`, null, { duration: 2000 });
-      }, 500);
-    });
   }
-
 }

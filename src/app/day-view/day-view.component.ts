@@ -23,8 +23,7 @@ export class DayViewComponent implements OnInit {
     '20:00', '21:00', '22:00', '23:00',
   ];
 
-  ngOnInit(): void {
-    this.events = this.eventService.fetchEvents();
+  ngOnInit = () => {
   }
 
 }
