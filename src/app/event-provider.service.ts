@@ -20,7 +20,18 @@ export class EventProviderService {
     discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest']
   };
 
-  constructor() {
+  constructor() {}
+
+  signOut() {
+    gapi.load('client:auth2', () => {
+      gapi.client.init({
+        clientId: CalendarApiConfig.clientId,
+        scope: this.scopes.join(' '),
+        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest']
+      }).then(() => {
+        gapi.auth2.getAuthInstance().signOut();
+      });
+    });
   }
 
   signIn(apiQueryPerformedCallback) {
@@ -66,11 +77,7 @@ export class EventProviderService {
 
   private updateSigninStatus = (isSignedIn: boolean) => {
     if (isSignedIn) {
-      console.log('User signed in...');
-      // this.isAuthorized = isSignedIn;
-      console.log('user profile: ', gapi.auth2.getAuthInstance().currentUser.get().getBasicProfile());
       } else {
-        this.isAuthorized = false;
       }
     }
 }

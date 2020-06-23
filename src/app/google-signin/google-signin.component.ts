@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { LoginPersistanceService } from '../login-persistance.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventProviderService } from '../event-provider.service';
@@ -27,44 +27,45 @@ export class GoogleSigninComponent implements OnInit {
   ) { }
 
   signIn = () => {
+    this.showSnackbar('Please authenticate in the Google Popup...');
     this.eventProviderService.signIn(this.onEventsLoaded);
   }
 
   logout = () => {
-    // this.eventProviderService.logout();
+    this.eventProviderService.signOut();
     // Display the toast message
-    this._snackBar.open('You have been logged out.', null, {
-      duration: 2000,
-    });
+    this.showSnackbar('You have been logged out.');
     // remove the item from storage
     this.loginPersistanceService.removeLogin();
     this.loggedIn = false;
   }
 
   private onEventsLoaded = data => {
-    console.group('From events loaded callback...');
-    console.log('Events loaded... !');
-    console.log(data);
-    console.groupEnd();
     this.eventDataRefreshed.emit(data.events);
     this.loggedIn = true;
     this.user = data.userProfile;
+    setTimeout(() => {
+      this.showSnackbar(`Hi ${this.user.name} !`);
+    }, 1000);
     this.loginPersistanceService.persistLogin(this.user);
-    this._snackBar.open(`Hi ${this.user.name} !`, null, { duration: 2000 });
   }
 
-  ngOnInit(): void {
+  private showSnackbar(message: string) {
+    this._snackBar.open(message, null, {
+      duration: 2000,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+      politeness: 'assertive',
+      panelClass: ['warning', 'mat-toolbar']
+    });
+  }
+
+  ngOnInit() {
     const loggedInUser = JSON.parse(this.loginPersistanceService.isUserLoggedIn());
     if (loggedInUser !== null) {
-      console.log('Found a logged in user, refresing events...');
-      // this.eventProviderService.setAuthorized(true);  // user logged in previously.
-      // this.eventProviderService.handleInitialization(() => {
-      //   // Refresh the events if the user is already logged on.
-      //   this.eventProviderService.fetchUpcomingEvents().subscribe(data => this.onEventsLoaded(data));
-      // })
+      this.user = loggedInUser;
+      this.loggedIn = true;
     } else {
-      console.log('Did not find any logged in User');
-      // this.eventProviderService.setAuthorized(false);
     }
   }
 }

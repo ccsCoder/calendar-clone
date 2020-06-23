@@ -23,18 +23,7 @@ export class DayViewComponent implements OnInit {
     '20:00', '21:00', '22:00', '23:00',
   ];
 
-  private setEventsData = data => {
-    console.log(data);
-    // separate out the profile data and event data.
-
-    // filter out data for today.
-
-    // pass them as props to downstream.
-
-  }
-
   ngOnInit = () => {
-    // this.eventService.fetchUpcomingEvents().subscribe(data => console.log(data));
   }
 
 }
