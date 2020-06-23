@@ -8,14 +8,14 @@ export class LoginPersistanceService {
   constructor() { }
 
   persistLogin(user): void {
-    sessionStorage.setItem('loggedInUser', JSON.stringify(user));
+    localStorage.setItem('loggedInUser', JSON.stringify(user));
   }
 
   isUserLoggedIn() {
-    return sessionStorage.getItem('loggedInUser');
+    return localStorage.getItem('loggedInUser');
   }
 
   removeLogin(): void {
-    sessionStorage.removeItem('loggedInUser');
+    localStorage.removeItem('loggedInUser');
   }
 }

@@ -26,19 +26,12 @@ export class GoogleSigninComponent implements OnInit {
     private _snackBar: MatSnackBar,
   ) { }
 
-  signInWithGoogle(): void {
-      this.eventProviderService.fetchUpcomingEvents().subscribe(data => {
-        // emit this data for rendering events.
-        this.eventDataRefreshed.emit(data.events);
-        this.loggedIn = true;
-        this.user = data.userProfile;
-        this.loginPersistanceService.persistLogin(this.user);
-        this._snackBar.open(`Hi ${this.user.name} !`, null, { duration: 2000 });
-      });
+  signIn = () => {
+    this.eventProviderService.signIn(this.onEventsLoaded);
   }
 
-  logout() {
-    this.eventProviderService.logout();
+  logout = () => {
+    // this.eventProviderService.logout();
     // Display the toast message
     this._snackBar.open('You have been logged out.', null, {
       duration: 2000,
@@ -48,12 +41,30 @@ export class GoogleSigninComponent implements OnInit {
     this.loggedIn = false;
   }
 
+  private onEventsLoaded = data => {
+    console.group('From events loaded callback...');
+    console.log('Events loaded... !');
+    console.log(data);
+    console.groupEnd();
+    this.eventDataRefreshed.emit(data.events);
+    this.loggedIn = true;
+    this.user = data.userProfile;
+    this.loginPersistanceService.persistLogin(this.user);
+    this._snackBar.open(`Hi ${this.user.name} !`, null, { duration: 2000 });
+  }
+
   ngOnInit(): void {
     const loggedInUser = JSON.parse(this.loginPersistanceService.isUserLoggedIn());
     if (loggedInUser !== null) {
-      this.loggedIn = true;
-      this.user = loggedInUser;
-      return;
+      console.log('Found a logged in user, refresing events...');
+      // this.eventProviderService.setAuthorized(true);  // user logged in previously.
+      // this.eventProviderService.handleInitialization(() => {
+      //   // Refresh the events if the user is already logged on.
+      //   this.eventProviderService.fetchUpcomingEvents().subscribe(data => this.onEventsLoaded(data));
+      // })
+    } else {
+      console.log('Did not find any logged in User');
+      // this.eventProviderService.setAuthorized(false);
     }
   }
 }
