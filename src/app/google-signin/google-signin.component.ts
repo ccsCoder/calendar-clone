@@ -1,7 +1,10 @@
-import { Component, OnInit, Output, EventEmitter, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { LoginPersistanceService } from '../login-persistance.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventProviderService } from '../event-provider.service';
+import { ViewSwitcherService } from '../view-switcher.service';
+import { CalendarQueryBuilderService } from '../calendar-query-builder.service';
+import { ViewTypes } from 'src/config/view-type';
 
 
 @Component({
@@ -16,18 +19,22 @@ export class GoogleSigninComponent implements OnInit {
   scopes: string[] = ['https://www.googleapis.com/auth/calendar.readonly',
   'https://www.googleapis.com/auth/calendar.events'];
 
-  @Output() eventDataRefreshed = new EventEmitter<any>();
-
-
   constructor(
     private loginPersistanceService: LoginPersistanceService,
     private eventProviderService: EventProviderService,
+    private viewSwitcherService: ViewSwitcherService,
+    private calendarQueryBuilder: CalendarQueryBuilderService,
     // tslint:disable-next-line: variable-name
     private _snackBar: MatSnackBar,
   ) { }
 
   signIn = () => {
     this.showSnackbar('Please authenticate in the Google Popup...');
+    const queryOptions = this.calendarQueryBuilder
+    .setViewType(ViewTypes.DAY)
+    .setDirection('NEXT')
+    .build();
+    this.eventProviderService.setQueryOptions(queryOptions);
     this.eventProviderService.signIn(this.onEventsLoaded);
   }
 
@@ -41,7 +48,6 @@ export class GoogleSigninComponent implements OnInit {
   }
 
   private onEventsLoaded = data => {
-    this.eventDataRefreshed.emit(data.events);
     this.loggedIn = true;
     this.user = data.userProfile;
     setTimeout(() => {

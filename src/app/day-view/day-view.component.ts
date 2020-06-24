@@ -7,13 +7,15 @@ import { EventProviderService } from '../event-provider.service';
   styleUrls: ['./day-view.component.sass']
 })
 export class DayViewComponent implements OnInit {
-  constructor(private eventService: EventProviderService) { }
 
+  events = [];
   currentDay: string = moment().format('dddd');
   currentDate: string = moment().format('Do');
   currentMonth: string = moment().format('MMMM');
 
-  events = null;
+  constructor(
+    private eventProviderService: EventProviderService,
+  ) { }
 
   slots: string[] = [
     '00:00', '01:00', '02:00', '03:00', '04:00',
@@ -23,7 +25,24 @@ export class DayViewComponent implements OnInit {
     '20:00', '21:00', '22:00', '23:00',
   ];
 
-  ngOnInit = () => {
+  private convertTime(dateTimeString) {
+    return moment(dateTimeString).format('HH:mm');
+  }
+
+  private processEvents(events: []) {
+    this.events = events.map((event: any) => {
+      event.startTime = this.convertTime(event.start.dateTime);
+      event.endTime = this.convertTime(event.end.dateTime);
+      event.name = event.summary;
+      return event;
+    });
+  }
+
+  ngOnInit() {
+    this.eventProviderService.eventsRefreshed$.subscribe((events: []) => {
+      console.log('Receive Events... !', events);
+      this.processEvents(events);
+    });
   }
 
 }

@@ -28,6 +28,7 @@ import { DayViewEventComponent } from './day-view-event/day-view-event.component
 import { EventProviderService } from './event-provider.service';
 import { GoogleSigninComponent } from './google-signin/google-signin.component';
 import { LoginPersistanceService } from './login-persistance.service';
+import { CalendarQueryBuilderService } from './calendar-query-builder.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -58,6 +59,7 @@ import { LoginPersistanceService } from './login-persistance.service';
   providers: [
     EventProviderService,
     LoginPersistanceService,
+    CalendarQueryBuilderService,
   ],
   bootstrap: [AppComponent]
 })
