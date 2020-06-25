@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
+import { CalendarActionsService } from '../calendar-actions.service';
+import { NavigationDirection } from 'src/config/navigation-direction';
 
 @Component({
   selector: 'app-toolbar',
@@ -13,7 +15,14 @@ export class ToolbarComponent implements OnInit {
   year: string = moment().format('YYYY').toString();
   ranges: string[] = ['Day', 'Week', 'Month', 'Year', 'Schedule', '4 days'];
   defaultSelection = 'Day';
-  constructor() { }
+
+  getNavigationDirections() { return NavigationDirection; }
+
+  constructor(private calendarActionsService: CalendarActionsService) { }
+
+  navigateDay(direction: NavigationDirection) {
+    this.calendarActionsService.dayNavigationOccured(direction);
+  }
 
   ngOnInit(): void {
   }
