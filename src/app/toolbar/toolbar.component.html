@@ -32,7 +32,11 @@
         <mat-icon>navigate_next</mat-icon>
       </button>
       <div class="calendar-datepicker">
-        <input matInput [matDatepicker]="picker"/>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          (dateChange)="onDateSelected($event)"
+        />
         <button (click)="picker.open()" mat-button>{{month}} {{year}}</button>
         <mat-datepicker #picker></mat-datepicker>
       </div>

@@ -20,6 +20,11 @@ export class ToolbarComponent implements OnInit {
 
   constructor(private calendarActionsService: CalendarActionsService) { }
 
+  onDateSelected($event) {
+    console.log($event.value);
+    this.calendarActionsService.dateSelectionOccured($event.value);
+  }
+
   navigateDay(direction: NavigationDirection) {
     this.calendarActionsService.dayNavigationOccured(direction);
   }

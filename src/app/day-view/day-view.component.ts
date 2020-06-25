@@ -56,19 +56,16 @@ export class DayViewComponent implements OnInit {
     this.setDateVariables();
   }
 
-  ngOnInit() {
-    this.eventProviderService.eventsRefreshed$.subscribe((events: []) => {
-      console.log('Receive Events... !', events);
-      this.processEvents(events);
-    });
-    // for calendar Next / Previous clicked.
+  private subscribeToNavigation() {
     this.calenderActionsService.dayNavigationAction$.subscribe((direction: NavigationDirection) => {
       let newDate = null;
       if (direction === NavigationDirection.NEXT) {
         newDate = moment(this.currentDateTime).add(1, 'day');
-      } else if (direction === NavigationDirection.PREV) {
+      }
+      else if (direction === NavigationDirection.PREV) {
         newDate = moment(this.currentDateTime).subtract(1, 'day');
-      } else if (direction === NavigationDirection.TODAY) {
+      }
+      else if (direction === NavigationDirection.TODAY) {
         // reset to today.
         newDate = moment();
       }
@@ -76,4 +73,25 @@ export class DayViewComponent implements OnInit {
     });
   }
 
+  private subscribeToDateSelection() {
+    this.calenderActionsService.dateSetAction$.subscribe((selectedDate: moment.Moment) => {
+      this.onDayChanged(selectedDate);
+    });
+  }
+
+  private subscribeToEventsRefreshed() {
+    this.eventProviderService.eventsRefreshed$.subscribe((events: []) => {
+      console.log('Receive Events... !', events);
+      this.processEvents(events);
+    });
+  }
+
+  ngOnInit() {
+    // subscription for events refreshed.
+    this.subscribeToEventsRefreshed();
+    // for calendar Next / Previous clicked.
+    this.subscribeToNavigation();
+    // for date selection event.
+    this.subscribeToDateSelection();
+  }
 }
