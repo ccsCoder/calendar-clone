@@ -7,7 +7,14 @@
       <div class="logo">
         <span>My Calendar</span>
       </div>
-      <button matTooltip="{{today}}" class="today-button" mat-stroked-button>Today</button>
+      <button
+        matTooltip="{{today}}"
+        class="today-button"
+        mat-stroked-button
+        (click)="navigateDay(getNavigationDirections().TODAY)"
+        >
+        Today
+      </button>
       <button
         class="navigation-button"
         matTooltip="Previous day"

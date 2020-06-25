@@ -68,6 +68,9 @@ export class DayViewComponent implements OnInit {
         newDate = moment(this.currentDateTime).add(1, 'day');
       } else if (direction === NavigationDirection.PREV) {
         newDate = moment(this.currentDateTime).subtract(1, 'day');
+      } else if (direction === NavigationDirection.TODAY) {
+        // reset to today.
+        newDate = moment();
       }
       this.onDayChanged(newDate);
     });
