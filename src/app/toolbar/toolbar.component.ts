@@ -22,6 +22,8 @@ export class ToolbarComponent implements OnInit {
 
   onDateSelected($event) {
     console.log($event.value);
+    this.month = moment($event.value).format('MMMM').toString();
+    this.year = moment($event.value).format('YYYY').toString();
     this.calendarActionsService.dateSelectionOccured($event.value);
   }
 
