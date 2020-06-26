@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { ViewTypes } from 'src/config/view-type';
+import { NavigationDirection } from 'src/config/navigation-direction';
 
 @Injectable({
   providedIn: 'root'
@@ -8,9 +9,8 @@ import { ViewTypes } from 'src/config/view-type';
 export class CalendarQueryBuilderService {
 
   viewType: ViewTypes;
-  direction: string;
-  DIR_PREV = 'PREV';
-  DIR_NEXT = 'NEXT';
+  direction: NavigationDirection;
+  currentDate: moment.Moment;
 
   constructor() { }
 
@@ -19,44 +19,57 @@ export class CalendarQueryBuilderService {
     return this;
   }
 
-  setDirection(direction: string) {
+  setDirection(direction: NavigationDirection) {
     this.direction = direction;
     return this;
   }
 
+  setCurrentDate(date: moment.Moment) {
+    this.currentDate = date;
+    return this;
+  }
+
   // yeah this is ugly. I don't have time.
+  // Will refactor if I get a couple of days.
   build() {
+    if (!this.currentDate) {
+      throw new Error('No current date specified!');
+    }
+    // else continue.
     let maxLimit = null;
     if (this.viewType === ViewTypes.DAY) {
-      if (this.direction === this.DIR_PREV) {
-        maxLimit = moment().subtract(1, 'day').toISOString();
-      } else if (this.direction === this.DIR_NEXT) {
-        maxLimit = moment().add(1, 'day').toISOString();
+      if (this.direction === NavigationDirection.PREV) {
+        // maxLimit = moment(this.currentDate).subtract(1, 'day');
+        maxLimit = this.currentDate;
+      } else if (this.direction === NavigationDirection.NEXT) {
+        // maxLimit = moment(this.currentDate).add(1, 'day');
+        maxLimit = this.currentDate;
       }
     } else if (this.viewType === ViewTypes.MONTH) {
-      if (this.direction === this.DIR_PREV) {
-        maxLimit = moment().subtract(1, 'month').toISOString();
-      } else if (this.direction === this.DIR_NEXT) {
-        maxLimit = moment().add(1, 'month').toISOString();
+      if (this.direction === NavigationDirection.PREV) {
+        maxLimit = moment(this.currentDate).subtract(1, 'month');
+      } else if (this.direction === NavigationDirection.NEXT) {
+        maxLimit = moment(this.currentDate).add(1, 'month');
       }
     } else if (this.viewType === ViewTypes.WEEK) {
-      if (this.direction === this.DIR_PREV) {
-        maxLimit = moment().subtract(1, 'week').toISOString();
-      } else if (this.direction === this.DIR_NEXT) {
-        maxLimit = moment().add(1, 'week').toISOString();
+      if (this.direction === NavigationDirection.PREV) {
+        maxLimit = moment(this.currentDate).subtract(1, 'week');
+      } else if (this.direction === NavigationDirection.NEXT) {
+        maxLimit = moment(this.currentDate).add(1, 'week');
       }
     } else if (this.viewType === ViewTypes.YEAR) {
-      if (this.direction === this.DIR_PREV) {
-        maxLimit = moment().subtract(1, 'year').toISOString();
-      } else if (this.direction === this.DIR_NEXT) {
-        maxLimit = moment().add(1, 'year').toISOString();
+      if (this.direction === NavigationDirection.PREV) {
+        maxLimit = moment(this.currentDate).subtract(1, 'year');
+      } else if (this.direction === NavigationDirection.NEXT) {
+        maxLimit = moment(this.currentDate).add(1, 'year');
       }
     } else if (this.viewType === ViewTypes.SCHEDULE) {
       console.log('Not supported yet...');
     }
 
     return {
-      timeMax: maxLimit,
+      timeMax: maxLimit.set({hour: 23, minute: 59, second: 59}).toISOString(),
+      timeMin: this.currentDate.set({hour: 0, minute: 0, second: 0}).toISOString(),
     };
   }
 

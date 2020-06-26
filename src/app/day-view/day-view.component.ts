@@ -3,6 +3,8 @@ import * as moment from 'moment';
 import { EventProviderService } from '../event-provider.service';
 import { CalendarActionsService } from '../calendar-actions.service';
 import { NavigationDirection } from 'src/config/navigation-direction';
+import { CalendarQueryBuilderService } from '../calendar-query-builder.service';
+import { ViewTypes } from 'src/config/view-type';
 @Component({
   selector: 'app-day-view',
   templateUrl: './day-view.component.html',
@@ -19,6 +21,7 @@ export class DayViewComponent implements OnInit {
   constructor(
     private eventProviderService: EventProviderService,
     private calenderActionsService: CalendarActionsService,
+    private calendarQueryBuilder: CalendarQueryBuilderService,
   ) {
     this.setDateVariables();
   }
@@ -58,6 +61,10 @@ export class DayViewComponent implements OnInit {
 
   private subscribeToNavigation() {
     this.calenderActionsService.dayNavigationAction$.subscribe((direction: NavigationDirection) => {
+      // Change the date appropriately.
+      // FIXME: the logic for calculating new dates is repeated in CalendarQuerybuilder and here.
+      // TODO: refactor them into a util or something.
+
       let newDate = null;
       if (direction === NavigationDirection.NEXT) {
         newDate = moment(this.currentDateTime).add(1, 'day');
@@ -70,6 +77,8 @@ export class DayViewComponent implements OnInit {
         newDate = moment();
       }
       this.onDayChanged(newDate);
+      // Query the calendar query options first.
+      this.queryCalendar(direction);
     });
   }
 
@@ -81,9 +90,20 @@ export class DayViewComponent implements OnInit {
 
   private subscribeToEventsRefreshed() {
     this.eventProviderService.eventsRefreshed$.subscribe((events: []) => {
-      console.log('Receive Events... !', events);
       this.processEvents(events);
     });
+  }
+
+  private queryCalendar(direction: NavigationDirection) {
+    this.eventProviderService.setQueryOptions(
+      this.calendarQueryBuilder
+        .setCurrentDate(this.currentDateTime)
+        .setViewType(ViewTypes.DAY)
+        .setDirection(direction)
+        .build()
+    );
+    // refresh events, will lead to invoking the callbck inside `subscribeToEventsRefreshed.`
+    this.eventProviderService.refreshEvents();
   }
 
   ngOnInit() {
