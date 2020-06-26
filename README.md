@@ -1,27 +1,22 @@
-# ANewCalendar
+# A Calendar along the lines of Google Calendar.
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.7.
+This project is based on Angular 9 because I've done enough projects in React. This DOES not intend to copy Google calendar completely, rather, it tries to Emulate it.
 
-## Development server
+## Integrations:
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Uses Google APIs (OAuth2 with Gapi to make things a bit easy). A better way would've been to write `Firebase Cloud Functions` and abstract the Gory integration stuff there, but I am lazy. Plus, it would've been another project to take care of !
 
-## Code scaffolding
+## Want to Contribute ?
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. Clone the project.
+2. npm install ( I prefer `yarn` but **@angular/material doesn't work well with it**, in that the scaffolding is not as expected. )
+3. Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`.
+4. For a list of Issues / Features, check the Issues section.
 
-## Build
+## IMPORTANT
+You will need to Authorize the app with Google such that it can access your Calendar and Events.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
 ## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Shoot a mail to `ccsCoder@gmail.com` if you need more help.
