@@ -49,7 +49,6 @@ export class EventProviderService {
 
   setQueryOptions(queryOptions) {
     this.queryOptions = Object.assign({}, this.queryOptions, queryOptions);
-    console.log('Inside setQueryOptions: ', this.queryOptions);
   }
 
   resetQueryOptions() {
@@ -80,7 +79,6 @@ export class EventProviderService {
    * Puts out the refreshed events in the observable stream.
    */
   refreshEvents = () => {
-    console.log('Inside refreshevents();, this.authorized => ', this.isAuthorized);
     if (this.isAuthorized) {
       // make the api call.
       gapi.client.calendar.events.list(this.getCalendarQueryOptions()).then(response => {
@@ -115,7 +113,6 @@ export class EventProviderService {
           };
           // manually update isAuthorized
           this.isAuthorized = googleAuthInstance.isSignedIn.get();
-          console.log('After signin, setting isAuthorized = ', this.isAuthorized);
           // put data on signin observable.
           this.signinCompleteSource.next(userProfileData);
           // callback for signin completed.
@@ -127,6 +124,5 @@ export class EventProviderService {
 
   private updateSigninStatus = (isSignedIn: boolean) => {
     this.isAuthorized = isSignedIn;
-    console.log(this.isAuthorized);
   }
 }
