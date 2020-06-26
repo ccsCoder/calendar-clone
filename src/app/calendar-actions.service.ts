@@ -18,7 +18,6 @@ export class CalendarActionsService {
 
   // When a date is set.
   dateSelectionOccured(selectedDate: Moment) {
-    console.log('In service, selectedDate = ', selectedDate);
     this.dateSetActionSource.next(selectedDate);
   }
 

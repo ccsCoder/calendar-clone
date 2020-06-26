@@ -25,51 +25,74 @@ export class CalendarQueryBuilderService {
   }
 
   setCurrentDate(date: moment.Moment) {
-    this.currentDate = date;
+    this.currentDate = moment(date);
     return this;
   }
 
-  // yeah this is ugly. I don't have time.
-  // Will refactor if I get a couple of days.
+  private minTime(date: moment.Moment): moment.Moment {
+    return date.set({hour: 0, minute: 0, second: 0});
+  }
+
+  private maxTime(date: moment.Moment): moment.Moment {
+    return date.set({hour: 23, minute: 59, second: 59});
+  }
+
+
+  /**
+   * NOTE: currentDate is the "CHANGED DATE !!!!". Deal accordingly
+   * yeah this is ugly. I don't have time.
+   * Will refactor if I get a couple of days.
+   */
   build() {
     if (!this.currentDate) {
       throw new Error('No current date specified!');
     }
     // else continue.
-    let maxLimit = null;
+    let maxLimit: moment.Moment = null;
+    let minLimit: moment.Moment = null;
+
     if (this.viewType === ViewTypes.DAY) {
-      if (this.direction === NavigationDirection.PREV) {
-        // maxLimit = moment(this.currentDate).subtract(1, 'day');
-        maxLimit = this.currentDate;
-      } else if (this.direction === NavigationDirection.NEXT) {
-        // maxLimit = moment(this.currentDate).add(1, 'day');
-        maxLimit = this.currentDate;
-      }
+      // We need to create new objects of "moment" because
+      // Moment is stupid at functional programming and mutates
+      // the original argument, hence leading to crappy dates.
+      maxLimit = moment(this.currentDate).endOf('day');
+      minLimit = moment(this.currentDate).startOf('day');
     } else if (this.viewType === ViewTypes.MONTH) {
+      // TODO: Change these once you get to Month view.
       if (this.direction === NavigationDirection.PREV) {
-        maxLimit = moment(this.currentDate).subtract(1, 'month');
+        minLimit = this.minTime(this.currentDate.subtract(1, 'month')
+          .startOf('month'));
+        maxLimit = this.maxTime(this.currentDate.subtract(1, 'month')
+          .endOf('month'));
       } else if (this.direction === NavigationDirection.NEXT) {
-        maxLimit = moment(this.currentDate).add(1, 'month');
+        maxLimit = this.maxTime(this.currentDate.add(1, 'month').endOf('month'));
+        minLimit = this.minTime(this.currentDate.add(1, 'month').startOf('month'));
       }
     } else if (this.viewType === ViewTypes.WEEK) {
       if (this.direction === NavigationDirection.PREV) {
-        maxLimit = moment(this.currentDate).subtract(1, 'week');
+        maxLimit = this.maxTime(this.currentDate.subtract(1, 'week').endOf('week'));
+        minLimit = this.minTime(this.currentDate.subtract(1, 'week').startOf('week'));
       } else if (this.direction === NavigationDirection.NEXT) {
-        maxLimit = moment(this.currentDate).add(1, 'week');
+        maxLimit = this.maxTime(this.currentDate.add(1, 'week').endOf('week'));
+        minLimit = this.minTime(this.currentDate.add(1, 'week').startOf('week'));
       }
     } else if (this.viewType === ViewTypes.YEAR) {
       if (this.direction === NavigationDirection.PREV) {
-        maxLimit = moment(this.currentDate).subtract(1, 'year');
+        maxLimit = this.maxTime(this.currentDate.subtract(1, 'year').endOf('year'));
+        minLimit = this.minTime(this.currentDate.subtract(1, 'year').startOf('year'));
       } else if (this.direction === NavigationDirection.NEXT) {
-        maxLimit = moment(this.currentDate).add(1, 'year');
+        maxLimit = this.maxTime(this.currentDate.add(1, 'year').endOf('year'));
+        minLimit = this.minTime(this.currentDate.add(1, 'year').startOf('year'));
       }
     } else if (this.viewType === ViewTypes.SCHEDULE) {
-      console.log('Not supported yet...');
+      maxLimit = moment().add(1, 'day');
+      minLimit = moment();
+
     }
 
     return {
-      timeMax: maxLimit.set({hour: 23, minute: 59, second: 59}).toISOString(),
-      timeMin: this.currentDate.set({hour: 0, minute: 0, second: 0}).toISOString(),
+      timeMax: maxLimit.toISOString(),
+      timeMin: minLimit.toISOString(),
     };
   }
 
