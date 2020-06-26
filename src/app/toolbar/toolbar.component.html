@@ -7,15 +7,36 @@
       <div class="logo">
         <span>My Calendar</span>
       </div>
-      <button matTooltip="{{today}}" class="today-button" mat-stroked-button>Today</button>
-      <button class="navigation-button" matTooltip="Previous day" mat-button aria-label="Previous day">
+      <button
+        matTooltip="{{today}}"
+        class="today-button"
+        mat-stroked-button
+        (click)="navigateDay(getNavigationDirections().TODAY)"
+        >
+        Today
+      </button>
+      <button
+        class="navigation-button"
+        matTooltip="Previous day"
+        mat-button aria-label="Previous day"
+        (click)="navigateDay(getNavigationDirections().PREV)"
+      >
         <mat-icon>navigate_before</mat-icon>
       </button>
-      <button class="navigation-button" matTooltip="Next day" mat-button aria-label="Next day">
+      <button
+        class="navigation-button"
+        matTooltip="Next day"
+        mat-button aria-label="Next day"
+        (click)="navigateDay(getNavigationDirections().NEXT)"
+      >
         <mat-icon>navigate_next</mat-icon>
       </button>
       <div class="calendar-datepicker">
-        <input matInput [matDatepicker]="picker"/>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          (dateChange)="onDateSelected($event)"
+        />
         <button (click)="picker.open()" mat-button>{{month}} {{year}}</button>
         <mat-datepicker #picker></mat-datepicker>
       </div>

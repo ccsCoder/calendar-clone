@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import { EventProviderService } from '../event-provider.service';
+import { CalendarActionsService } from '../calendar-actions.service';
+import { NavigationDirection } from 'src/config/navigation-direction';
+import { CalendarQueryBuilderService } from '../calendar-query-builder.service';
+import { ViewTypes } from 'src/config/view-type';
 @Component({
   selector: 'app-day-view',
   templateUrl: './day-view.component.html',
@@ -9,13 +13,18 @@ import { EventProviderService } from '../event-provider.service';
 export class DayViewComponent implements OnInit {
 
   events = [];
-  currentDay: string = moment().format('dddd');
-  currentDate: string = moment().format('Do');
-  currentMonth: string = moment().format('MMMM');
+  currentDateTime = moment();
+  currentDay: string = null;
+  currentDate: string = null;
+  currentMonth: string = null;
 
   constructor(
     private eventProviderService: EventProviderService,
-  ) { }
+    private calenderActionsService: CalendarActionsService,
+    private calendarQueryBuilder: CalendarQueryBuilderService,
+  ) {
+    this.setDateVariables();
+  }
 
   slots: string[] = [
     '00:00', '01:00', '02:00', '03:00', '04:00',
@@ -24,6 +33,12 @@ export class DayViewComponent implements OnInit {
     '15:00', '16:00', '17:00', '18:00', '19:00',
     '20:00', '21:00', '22:00', '23:00',
   ];
+
+  private setDateVariables() {
+    this.currentDay = moment(this.currentDateTime).format('dddd');
+    this.currentDate = moment(this.currentDateTime).format('Do');
+    this.currentMonth = moment(this.currentDateTime).format('MMMM');
+  }
 
   private convertTime(dateTimeString) {
     return moment(dateTimeString).format('HH:mm');
@@ -38,11 +53,65 @@ export class DayViewComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  private onDayChanged(newDate: moment.Moment) {
+    this.currentDateTime = moment(newDate);
+    // update the dates.
+    this.setDateVariables();
+  }
+
+  private subscribeToNavigation() {
+    this.calenderActionsService.dayNavigationAction$.subscribe((direction: NavigationDirection) => {
+      // Change the date appropriately.
+      // FIXME: the logic for calculating new dates is repeated in CalendarQuerybuilder and here.
+      // TODO: refactor them into a util or something.
+
+      let newDate = null;
+      if (direction === NavigationDirection.NEXT) {
+        newDate = moment(this.currentDateTime).add(1, 'day');
+      }
+      else if (direction === NavigationDirection.PREV) {
+        newDate = moment(this.currentDateTime).subtract(1, 'day');
+      }
+      else if (direction === NavigationDirection.TODAY) {
+        // reset to today.
+        newDate = moment();
+      }
+      this.onDayChanged(newDate);
+      // Query the calendar query options first.
+      this.queryCalendar(direction);
+    });
+  }
+
+  private subscribeToDateSelection() {
+    this.calenderActionsService.dateSetAction$.subscribe((selectedDate: moment.Moment) => {
+      this.onDayChanged(selectedDate);
+    });
+  }
+
+  private subscribeToEventsRefreshed() {
     this.eventProviderService.eventsRefreshed$.subscribe((events: []) => {
-      console.log('Receive Events... !', events);
       this.processEvents(events);
     });
   }
 
+  private queryCalendar(direction: NavigationDirection) {
+    this.eventProviderService.setQueryOptions(
+      this.calendarQueryBuilder
+        .setCurrentDate(this.currentDateTime)
+        .setViewType(ViewTypes.DAY)
+        .setDirection(direction)
+        .build()
+    );
+    // refresh events, will lead to invoking the callbck inside `subscribeToEventsRefreshed.`
+    this.eventProviderService.refreshEvents();
+  }
+
+  ngOnInit() {
+    // subscription for events refreshed.
+    this.subscribeToEventsRefreshed();
+    // for calendar Next / Previous clicked.
+    this.subscribeToNavigation();
+    // for date selection event.
+    this.subscribeToDateSelection();
+  }
 }

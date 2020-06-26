@@ -2,10 +2,6 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { LoginPersistanceService } from '../login-persistance.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EventProviderService } from '../event-provider.service';
-import { ViewSwitcherService } from '../view-switcher.service';
-import { CalendarQueryBuilderService } from '../calendar-query-builder.service';
-import { ViewTypes } from 'src/config/view-type';
-
 
 @Component({
   selector: 'app-google-signin',
@@ -22,20 +18,13 @@ export class GoogleSigninComponent implements OnInit {
   constructor(
     private loginPersistanceService: LoginPersistanceService,
     private eventProviderService: EventProviderService,
-    private viewSwitcherService: ViewSwitcherService,
-    private calendarQueryBuilder: CalendarQueryBuilderService,
     // tslint:disable-next-line: variable-name
     private _snackBar: MatSnackBar,
   ) { }
 
   signIn = () => {
     this.showSnackbar('Please authenticate in the Google Popup...');
-    const queryOptions = this.calendarQueryBuilder
-    .setViewType(ViewTypes.DAY)
-    .setDirection('NEXT')
-    .build();
-    this.eventProviderService.setQueryOptions(queryOptions);
-    this.eventProviderService.signIn(this.onEventsLoaded);
+    this.eventProviderService.signIn();
   }
 
   logout = () => {
@@ -47,9 +36,9 @@ export class GoogleSigninComponent implements OnInit {
     this.loggedIn = false;
   }
 
-  private onEventsLoaded = data => {
+  private onSigninComplete = userProfileData => {
     this.loggedIn = true;
-    this.user = data.userProfile;
+    this.user = userProfileData;
     setTimeout(() => {
       this.showSnackbar(`Hi ${this.user.name} !`);
     }, 1000);
@@ -67,8 +56,13 @@ export class GoogleSigninComponent implements OnInit {
   }
 
   ngOnInit() {
+    // Sign in notifier...
+    this.eventProviderService.signinComplete$.subscribe(userProfileData => {
+      this.onSigninComplete(userProfileData);
+    });
     const loggedInUser = JSON.parse(this.loginPersistanceService.isUserLoggedIn());
     if (loggedInUser !== null) {
+      // this.eventProviderService.isAuthorized = true;
       this.user = loggedInUser;
       this.loggedIn = true;
     } else {

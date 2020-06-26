@@ -22,9 +22,11 @@ export class EventProviderService {
   };
 
   eventsRefreshedSource = new Subject();
+  signinCompleteSource = new Subject<any>();
 
   // this is the guy to subscribe to.
   eventsRefreshed$ = this.eventsRefreshedSource.asObservable();
+  signinComplete$ = this.signinCompleteSource.asObservable();
 
   queryOptions = {
     timeMin: moment().toISOString(),
@@ -47,7 +49,6 @@ export class EventProviderService {
 
   setQueryOptions(queryOptions) {
     this.queryOptions = Object.assign({}, this.queryOptions, queryOptions);
-    console.log('Inside setQueryOptions: ', this.queryOptions);
   }
 
   resetQueryOptions() {
@@ -69,12 +70,27 @@ export class EventProviderService {
     if (this.queryOptions.timeMax !== null) {
       q.timeMax = this.queryOptions.timeMax;
     }
-    console.log('Inside getCalendarQueryOptons(): ', q);
     return q;
   }
 
-  signIn(apiQueryPerformedCallback) {
-    // do EVERYTHING HERE !!!
+
+  /**
+   * Refreshes events
+   * Puts out the refreshed events in the observable stream.
+   */
+  refreshEvents = () => {
+    if (this.isAuthorized) {
+      // make the api call.
+      gapi.client.calendar.events.list(this.getCalendarQueryOptions()).then(response => {
+        // Put the next item in the observble stream.
+        this.eventsRefreshedSource.next(response.result.items);
+      });
+    } else {
+      this.signIn(this.refreshEvents);
+    }
+  }
+
+  signIn(signinCompleteCallback = () => {}) {
     const apiResponse: any = {};
     gapi.load('client:auth2', () => {
       gapi.client.init({
@@ -85,32 +101,28 @@ export class EventProviderService {
         // Get the auth instance to use later.
         const googleAuthInstance = gapi.auth2.getAuthInstance();
         // Listen for sign in state changes
-        // googleAuthInstance.isSignedIn.listen(this.updateSigninStatus);
+        googleAuthInstance.isSignedIn.listen(this.updateSigninStatus);
         // Sign in.
         googleAuthInstance.signIn().then(() => {
           const userProfile = googleAuthInstance.currentUser.get().getBasicProfile();
-          apiResponse.userProfile = {
+          const userProfileData = {
             id: userProfile.getId(),
             name: userProfile.getName(),
             imageUrl: userProfile.getImageUrl(),
             email: userProfile.getEmail(),
           };
-          // make the api call.
-          gapi.client.calendar.events.list(this.getCalendarQueryOptions()).then(response => {
-            apiResponse.events = response.result.items;
-            // Finally call the callback.
-            apiQueryPerformedCallback(apiResponse);
-            // Put the next item in the observalbe stream.
-            this.eventsRefreshedSource.next(apiResponse.events);
-          });
+          // manually update isAuthorized
+          this.isAuthorized = googleAuthInstance.isSignedIn.get();
+          // put data on signin observable.
+          this.signinCompleteSource.next(userProfileData);
+          // callback for signin completed.
+          signinCompleteCallback();
         });
       }, error => console.error(`Something went wrong... !!! : ${error.message}`));
     });
   }
 
-  // private updateSigninStatus = (isSignedIn: boolean) => {
-  //   if (isSignedIn) {
-  //     } else {
-  //     }
-  //   }
+  private updateSigninStatus = (isSignedIn: boolean) => {
+    this.isAuthorized = isSignedIn;
+  }
 }
