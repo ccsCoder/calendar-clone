@@ -12,7 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 
 // Components
@@ -29,6 +29,7 @@ import { EventProviderService } from './event-provider.service';
 import { GoogleSigninComponent } from './google-signin/google-signin.component';
 import { LoginPersistanceService } from './login-persistance.service';
 import { CalendarQueryBuilderService } from './calendar-query-builder.service';
+import { OperationIndicationService } from './operation-indication.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -55,11 +56,13 @@ import { CalendarQueryBuilderService } from './calendar-query-builder.service';
     MatSelectModule,
     MatGridListModule,
     MatSnackBarModule,
+    MatProgressBarModule,
   ],
   providers: [
     EventProviderService,
     LoginPersistanceService,
     CalendarQueryBuilderService,
+    OperationIndicationService,
   ],
   bootstrap: [AppComponent]
 })

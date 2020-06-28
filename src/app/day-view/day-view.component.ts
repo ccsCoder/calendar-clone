@@ -5,6 +5,7 @@ import { CalendarActionsService } from '../calendar-actions.service';
 import { NavigationDirection } from 'src/config/navigation-direction';
 import { CalendarQueryBuilderService } from '../calendar-query-builder.service';
 import { ViewTypes } from 'src/config/view-type';
+import { OperationIndicationService } from '../operation-indication.service';
 @Component({
   selector: 'app-day-view',
   templateUrl: './day-view.component.html',
@@ -22,6 +23,7 @@ export class DayViewComponent implements OnInit {
     private eventProviderService: EventProviderService,
     private calenderActionsService: CalendarActionsService,
     private calendarQueryBuilder: CalendarQueryBuilderService,
+    private operationIndicator: OperationIndicationService,
   ) {
     this.setDateVariables();
   }
@@ -65,6 +67,9 @@ export class DayViewComponent implements OnInit {
       // FIXME: the logic for calculating new dates is repeated in CalendarQuerybuilder and here.
       // TODO: refactor them into a util or something.
 
+      // set the loading state
+      this.operationIndicator.loading();
+
       let newDate = null;
       if (direction === NavigationDirection.NEXT) {
         newDate = moment(this.currentDateTime).add(1, 'day');
@@ -90,6 +95,7 @@ export class DayViewComponent implements OnInit {
 
   private subscribeToEventsRefreshed() {
     this.eventProviderService.eventsRefreshed$.subscribe((events: []) => {
+      this.operationIndicator.complete();
       this.processEvents(events);
     });
   }
