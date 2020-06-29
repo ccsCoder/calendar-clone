@@ -89,7 +89,10 @@ export class DayViewComponent implements OnInit {
 
   private subscribeToDateSelection() {
     this.calenderActionsService.dateSetAction$.subscribe((selectedDate: moment.Moment) => {
+      this.operationIndicator.loading();
       this.onDayChanged(selectedDate);
+      // refresh events for that day.
+      this.queryCalendar(NavigationDirection.DATE_SELECTION);
     });
   }
 
