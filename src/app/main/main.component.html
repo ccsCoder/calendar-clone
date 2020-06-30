@@ -4,5 +4,8 @@
     mode="indeterminate"
   >
   </mat-progress-bar>
-  <app-day-view></app-day-view>
+  <app-day-view *ngIf="getViewTypes().DAY === viewType"></app-day-view>
+  <app-month-view *ngIf="getViewTypes().MONTH === viewType"></app-month-view>
+  <app-week-view *ngIf="getViewTypes().WEEK === viewType"></app-week-view>
+  <app-schedule-view *ngIf="getViewTypes().SCHEDULE === viewType"></app-schedule-view>
 </div>

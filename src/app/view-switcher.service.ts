@@ -1,17 +1,19 @@
 import { Injectable } from '@angular/core';
 import { ViewTypes } from 'src/config/view-type';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ViewSwitcherService {
 
-  currentView: ViewTypes = ViewTypes.DAY;
+  viewTypeChangeSource = new Subject<ViewTypes>();
+  viewTypeChanged$ = this.viewTypeChangeSource.asObservable();
 
   constructor() { }
 
-  setCurrentView(view: ViewTypes) {
-    this.currentView = view;
+  setView(view: ViewTypes) {
+    this.viewTypeChangeSource.next(view);
   }
 
 }

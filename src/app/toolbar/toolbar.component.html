@@ -45,9 +45,13 @@
       <button matTooltip="Settings" mat-button aria-label="Settings">
         <mat-icon>settings</mat-icon>
       </button>
-      <mat-select class="range-selector" [(value)]="defaultSelection">
-        <mat-option *ngFor="let range of ranges" [value]="range">
-          {{range}}
+      <mat-select
+        class="range-selector"
+        (selectionChange)="onViewTypeChanged($event.value)"
+        [(value)]="currentSelection"
+      >
+        <mat-option *ngFor="let range of ranges" [value]="range.value">
+          {{range.displayText}}
         </mat-option>
       </mat-select>
       <app-google-signin></app-google-signin>

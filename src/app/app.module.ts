@@ -30,6 +30,10 @@ import { GoogleSigninComponent } from './google-signin/google-signin.component';
 import { LoginPersistanceService } from './login-persistance.service';
 import { CalendarQueryBuilderService } from './calendar-query-builder.service';
 import { OperationIndicationService } from './operation-indication.service';
+import { ViewSwitcherService } from './view-switcher.service';
+import { WeekViewComponent } from './week-view/week-view.component';
+import { MonthViewComponent } from './month-view/month-view.component';
+import { ScheduleViewComponent } from './schedule-view/schedule-view.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,6 +45,9 @@ import { OperationIndicationService } from './operation-indication.service';
     DayTimeSlotComponent,
     DayViewEventComponent,
     GoogleSigninComponent,
+    WeekViewComponent,
+    MonthViewComponent,
+    ScheduleViewComponent,
   ],
   imports: [
     BrowserModule,
@@ -63,6 +70,7 @@ import { OperationIndicationService } from './operation-indication.service';
     LoginPersistanceService,
     CalendarQueryBuilderService,
     OperationIndicationService,
+    ViewSwitcherService,
   ],
   bootstrap: [AppComponent]
 })
