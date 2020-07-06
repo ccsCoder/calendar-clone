@@ -34,6 +34,7 @@ import { ViewSwitcherService } from './view-switcher.service';
 import { WeekViewComponent } from './week-view/week-view.component';
 import { MonthViewComponent } from './month-view/month-view.component';
 import { ScheduleViewComponent } from './schedule-view/schedule-view.component';
+import { WeekViewService } from './week-view.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -71,6 +72,7 @@ import { ScheduleViewComponent } from './schedule-view/schedule-view.component';
     CalendarQueryBuilderService,
     OperationIndicationService,
     ViewSwitcherService,
+    WeekViewService,
   ],
   bootstrap: [AppComponent]
 })

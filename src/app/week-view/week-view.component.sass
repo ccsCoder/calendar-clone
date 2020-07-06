@@ -1,0 +1,36 @@
+.week-view
+  height: 100%
+  width: 100%
+  padding: 0 20px 10px 10px
+  border: .5px solid black
+
+
+  & > .week-grid
+    display: grid
+    grid-template-rows: 90px repeat(23, 1fr)
+    grid-template-columns: 100px repeat(7, 1fr)
+
+.week-day-header
+  border: .5px solid lightgray
+  border-right: none
+  font-size: 1rem
+  display: flex
+  flex-direction: column
+  justify-content: center
+  align-items: center
+  color: grey
+
+
+  & > .week-day
+    text-transform: uppercase
+    font-size: .8rem
+    letter-spacing: 2px
+    font-weight: bold
+
+  & > .week-date
+    margin-top: 20px
+    font-size: 2rem
+    color: #535050
+
+.week-day-header:last-child
+  border-right: .5px solid lightgray

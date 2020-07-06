@@ -1,1 +1,11 @@
-<p>week-view works!</p>
+<section class="week-view">
+  <div class="week-grid">
+    <div class="week-day-header" *ngFor="let weekDay of getCurrentWeekDays()">
+      <div class="week-day">{{weekDay.day}}</div>
+      <div class="week-date">{{weekDay.date}}</div>
+    </div>
+    <!-- <div class="week-day" *ngFor="let weekday of [].constructor(168)">
+      Hello world
+    </div> -->
+  </div>
+</section>
